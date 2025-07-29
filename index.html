@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Geometric Landing Page</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body, html {
+            height: 100vh;
+            overflow: hidden; /* Prevent actual scrolling */
+        }
+        
+        .container {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+        }
+        
+        /* Scroll-triggered morphing states */
+        body.scrolled .triangle-top-right {
+            clip-path: polygon(0% 0%, 100% 0%, 100% 70%);
+            height: 70vh;
+        }
+        
+        body.scrolled .triangle-top-left {
+            clip-path: polygon(0% 0%, 0% 70%, 100% 0%);
+            height: 70vh;
+        }
+        
+        body.scrolled .triangle-bottom-right {
+            clip-path: polygon(100% 30%, 100% 100%, 0% 100%);
+            height: 70vh;
+        }
+        
+        body.scrolled .triangle-bottom-left {
+            clip-path: polygon(0% 30%, 100% 100%, 0% 100%);
+            height: 70vh;
+        }
+        
+        .container {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+        }
+        
+        /* Main background */
+        .background {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle, #1C1C1C 0%, #131313 100%);
+            z-index: -100;
+        }
+        
+        /* Top right triangle */
+        .triangle-top-right {
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 100vw;
+            height: 33vh;
+            background: linear-gradient(135deg, #1E1E1E, #232323);
+            clip-path: polygon(0% 0%, 100% 0%, 100% 33%);
+            z-index: -3;
+            transition: all 0.3s ease-out;
+        }
+        
+        /* Top left triangle */
+        .triangle-top-left {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 33vh;
+            background: linear-gradient(45deg, #373737, #2F2F2F);
+            clip-path: polygon(0% 0%, 0% 33%, 100% 0%);
+            z-index: -4;
+            transition: all 0.3s ease-out;
+        }
+        
+        /* Bottom right triangle */
+        .triangle-bottom-right {
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            width: 100vw;
+            height: 33vh;
+            background: linear-gradient(135deg, #373737, #2F2F2F);
+            clip-path: polygon(100% 67%, 100% 100%, 0% 100%);
+            z-index: -2;
+            transition: all 0.3s ease-out;
+        }
+        
+        /* Bottom left triangle */
+        .triangle-bottom-left {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100vw;
+            height: 33vh;
+            background: linear-gradient(45deg, #1E1E1E, #232323);
+            clip-path: polygon(0% 67%, 100% 100%, 0% 100%);
+            z-index: -1;
+            transition: all 0.3s ease-out;
+        }
+        
+        /* Centered image */
+        .center-image {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 50vw;
+            height: auto;
+            z-index: 0;
+            transition: transform 0.3s ease;
+        }
+        
+        .center-image:hover {
+            transform: translate(-50%, -50%) scale(1.05);
+        }
+        
+        .image-link {
+            display: inline-block;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 0;
+        }
+        
+        .image-link img {
+            width: 50vw;
+            height: auto;
+            transition: transform 0.3s ease;
+        }
+        
+        .image-link:hover img {
+            transform: scale(1.05);
+        }
+    </style>
+    <script>
+        let scrollAccumulator = 0;
+        let isAnimating = false;
+        
+        window.addEventListener('wheel', function(e) {
+            e.preventDefault(); // Prevent actual scrolling
+            
+            // Accumulate scroll delta
+            scrollAccumulator += e.deltaY;
+            
+            // Determine if we should be in "scrolled" state
+            const shouldBeScrolled = scrollAccumulator > 100;
+            const currentlyScrolled = document.body.classList.contains('scrolled');
+            
+            // Only toggle if state should change
+            if (shouldBeScrolled !== currentlyScrolled) {
+                document.body.classList.toggle('scrolled', shouldBeScrolled);
+            }
+            
+            // Reset accumulator if we've gone too far in either direction
+            if (scrollAccumulator < 0) scrollAccumulator = 0;
+            if (scrollAccumulator > 200) scrollAccumulator = 200;
+        }, { passive: false });
+        
+        // Also handle touch/trackpad gestures
+        window.addEventListener('touchmove', function(e) {
+            e.preventDefault();
+        }, { passive: false });
+    </script>
+</head>
+<body>
+    <div class="container">
+        <!-- Background -->
+        <div class="background"></div>
+        
+        <!-- Corner triangles -->
+        <div class="triangle-top-right"></div>
+        <div class="triangle-top-left"></div>
+        <div class="triangle-bottom-right"></div>
+        <div class="triangle-bottom-left"></div>
+        
+        <!-- Centered image with link -->
+        <a href="https://freebirdlabs.co" target="_blank" class="image-link">
+            <img src="appmogged.svg" alt="Centered Image">
+        </a>
+    </div>
+</body>
+</html>
