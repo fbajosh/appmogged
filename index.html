@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Geometric Landing Page</title>
+    <title>AppMogged. Get mogged.</title>
+    <link rel="icon" type="image/png" href="appmogged.svg">
     <style>
         * {
             margin: 0;
@@ -22,7 +23,6 @@
             height: 100vh;
         }
         
-        /* Scroll-triggered morphing states */
         body.scrolled .triangle-top-right {
             clip-path: polygon(0% 0%, 100% 0%, 100% 70%);
             height: 70vh;
@@ -49,7 +49,6 @@
             height: 100vh;
         }
         
-        /* Main background */
         .background {
             position: absolute;
             top: 0;
@@ -60,7 +59,6 @@
             z-index: -100;
         }
         
-        /* Top right triangle */
         .triangle-top-right {
             position: absolute;
             top: 0;
@@ -73,7 +71,6 @@
             transition: all 0.3s ease-out;
         }
         
-        /* Top left triangle */
         .triangle-top-left {
             position: absolute;
             top: 0;
@@ -86,7 +83,6 @@
             transition: all 0.3s ease-out;
         }
         
-        /* Bottom right triangle */
         .triangle-bottom-right {
             position: absolute;
             bottom: 0;
@@ -99,7 +95,6 @@
             transition: all 0.3s ease-out;
         }
         
-        /* Bottom left triangle */
         .triangle-bottom-left {
             position: absolute;
             bottom: 0;
@@ -112,7 +107,6 @@
             transition: all 0.3s ease-out;
         }
         
-        /* Centered image */
         .center-image {
             position: absolute;
             top: 50%;
@@ -179,16 +173,11 @@
 </head>
 <body>
     <div class="container">
-        <!-- Background -->
         <div class="background"></div>
-        
-        <!-- Corner triangles -->
         <div class="triangle-top-right"></div>
         <div class="triangle-top-left"></div>
         <div class="triangle-bottom-right"></div>
         <div class="triangle-bottom-left"></div>
-        
-        <!-- Centered image with link -->
         <a href="https://freebirdlabs.co" target="_blank" class="image-link">
             <img src="appmogged.svg" alt="Centered Image">
         </a>
