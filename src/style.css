@@ -157,7 +157,9 @@ body.scrolled .triangle-bottom-left {
 .logo-breath {
     width: 100%;
     height: 100%;
-    animation: logo-breathe 7.5s ease-in-out infinite;
+    animation:
+        logo-breathe 3.84s ease-in-out infinite,
+        logo-static-blur 15.36s linear infinite;
     transform-origin: center;
 }
 
@@ -361,6 +363,27 @@ body.scrolled .triangle-bottom-left {
 
     50% {
         transform: scale(1.045);
+    }
+}
+
+@keyframes logo-static-blur {
+    0%,
+    96.8%,
+    98.8%,
+    100% {
+        filter: none;
+    }
+
+    97.2% {
+        filter: blur(1.2px) contrast(1.28) saturate(1.22);
+    }
+
+    97.7% {
+        filter: blur(0.6px) contrast(1.48) saturate(0.86);
+    }
+
+    98.2% {
+        filter: blur(1px) contrast(1.18) saturate(1.35);
     }
 }
 

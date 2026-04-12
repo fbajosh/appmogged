@@ -45,11 +45,18 @@ function setupAudio() {
     const muteButton = document.querySelector(".audio-toggle");
     if (!music || !muteButton) return;
 
-    const musicStartSeconds = 14;
-    const fadeInMilliseconds = 1000;
-    let fadeFrame = 0;
-    let hasSetStartTime = false;
-    let hasFadedIn = false;
+    const playRetryEvents = [
+        "click",
+        "keydown",
+        "mousedown",
+        "mousemove",
+        "pointerdown",
+        "pointermove",
+        "scroll",
+        "touchmove",
+        "touchstart",
+        "wheel",
+    ];
 
     function syncMuteState() {
         muteButton.classList.toggle("is-muted", music.muted);
@@ -57,51 +64,28 @@ function setupAudio() {
         muteButton.setAttribute("aria-label", music.muted ? "Unmute music" : "Mute music");
     }
 
-    function setMusicStartTime() {
-        if (hasSetStartTime) return;
-        if (Number.isFinite(music.duration) && music.duration > musicStartSeconds) {
-            music.currentTime = musicStartSeconds;
-        }
-        hasSetStartTime = true;
-    }
-
-    function fadeMusicIn() {
-        if (hasFadedIn) return;
-        hasFadedIn = true;
-        music.volume = 0;
-        const startedAt = performance.now();
-
-        function step(now) {
-            const progress = Math.min((now - startedAt) / fadeInMilliseconds, 1);
-            music.volume = progress;
-            if (progress < 1) fadeFrame = requestAnimationFrame(step);
-        }
-
-        cancelAnimationFrame(fadeFrame);
-        fadeFrame = requestAnimationFrame(step);
-    }
-
     function playMusic() {
-        setMusicStartTime();
         const playAttempt = music.play();
         if (playAttempt && typeof playAttempt.catch === "function") {
-            playAttempt.then(fadeMusicIn).catch(() => {});
-        } else {
-            fadeMusicIn();
+            playAttempt
+                .then(() => {
+                    playRetryEvents.forEach((eventName) => {
+                        window.removeEventListener(eventName, playMusic);
+                    });
+                })
+                .catch(() => {});
         }
     }
 
-    music.volume = 0;
-    music.addEventListener("loadedmetadata", setMusicStartTime, { once: true });
-    music.addEventListener("play", fadeMusicIn, { once: true });
+    music.volume = 1;
     muteButton.addEventListener("click", () => {
         music.muted = !music.muted;
         syncMuteState();
         playMusic();
     });
 
-    ["click", "keydown", "pointerdown", "wheel", "touchstart"].forEach((eventName) => {
-        window.addEventListener(eventName, playMusic, { once: true, passive: true });
+    playRetryEvents.forEach((eventName) => {
+        window.addEventListener(eventName, playMusic, { passive: true });
     });
 
     syncMuteState();
