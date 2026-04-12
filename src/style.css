@@ -1,0 +1,385 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html,
+body {
+    height: 100vh;
+    overflow: hidden;
+    background: #131313;
+}
+
+.container {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+    isolation: isolate;
+}
+
+body.scrolled .triangle-top-right {
+    clip-path: polygon(-12% 0%, 100% 0%, 100% 70%);
+    height: 70vh;
+}
+
+body.scrolled .triangle-top-left {
+    clip-path: polygon(0% 0%, 0% 68%, 100% 0%);
+    height: 70vh;
+}
+
+body.scrolled .triangle-bottom-right {
+    clip-path: polygon(100% 32%, 100% 100%, 0% 100%);
+    height: 70vh;
+}
+
+body.scrolled .triangle-bottom-left {
+    clip-path: polygon(0% 30%, 112% 100%, 0% 100%);
+    height: 70vh;
+}
+
+.background {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle, #1C1C1C 0%, #131313 100%);
+    z-index: 0;
+}
+
+.smoke-layer {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+    overflow: hidden;
+    filter: blur(12px);
+    opacity: 0.78;
+}
+
+.smoke-layer::before,
+.smoke-layer::after {
+    content: "";
+    position: absolute;
+    left: 50%;
+    bottom: -24vh;
+    width: 112vw;
+    height: 72vh;
+    border-radius: 50%;
+    background:
+        radial-gradient(circle at 22% 74%, rgba(255, 255, 255, 0.14), transparent 19%),
+        radial-gradient(circle at 42% 68%, rgba(255, 255, 255, 0.11), transparent 23%),
+        radial-gradient(circle at 63% 72%, rgba(255, 255, 255, 0.13), transparent 21%),
+        radial-gradient(circle at 80% 66%, rgba(255, 255, 255, 0.09), transparent 22%);
+    transform: translateX(-50%);
+    animation: smoke-haze 4.5s ease-in-out infinite;
+}
+
+.smoke-layer::after {
+    bottom: -18vh;
+    width: 92vw;
+    height: 62vh;
+    opacity: 0.68;
+    animation-delay: -2.25s;
+    animation-duration: 5.5s;
+}
+
+.smoke {
+    position: absolute;
+    left: var(--x);
+    bottom: -28vh;
+    width: var(--size);
+    height: var(--size);
+    border-radius: 48% 52% 55% 45%;
+    background:
+        radial-gradient(circle at 42% 38%, rgba(255, 255, 255, 0.2), transparent 24%),
+        radial-gradient(circle at 62% 58%, rgba(255, 255, 255, 0.13), transparent 30%),
+        radial-gradient(circle at 34% 68%, rgba(255, 255, 255, 0.09), transparent 32%);
+    opacity: 0;
+    transform: translate3d(-50%, 0, 0) scale(0.55) rotate(var(--rotate));
+    animation: smoke-rise var(--duration) linear infinite;
+    animation-delay: var(--delay);
+    will-change: transform, opacity;
+}
+
+.triangle-top-right,
+.triangle-top-left,
+.triangle-bottom-right,
+.triangle-bottom-left {
+    position: absolute;
+    width: 100vw;
+    height: 33vh;
+    transition: all 0.3s ease-out;
+}
+
+.triangle-top-right {
+    top: 0;
+    right: 0;
+    background: linear-gradient(135deg, #1E1E1E, #232323);
+    clip-path: polygon(4% 0%, 100% 0%, 100% 33%);
+    z-index: 5;
+}
+
+.triangle-top-left {
+    top: 0;
+    left: 0;
+    background: linear-gradient(45deg, #373737, #2F2F2F);
+    clip-path: polygon(0% 0%, 0% 32%, 100% 0%);
+    z-index: 4;
+}
+
+.triangle-bottom-right {
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, #373737, #2F2F2F);
+    clip-path: polygon(100% 68%, 100% 100%, 0% 100%);
+    z-index: 6;
+}
+
+.triangle-bottom-left {
+    bottom: 0;
+    left: 0;
+    background: linear-gradient(45deg, #1E1E1E, #232323);
+    clip-path: polygon(0% 67%, 96% 100%, 0% 100%);
+    z-index: 7;
+}
+
+.logo-stage {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: min(50vw, 620px);
+    aspect-ratio: 410 / 141;
+    perspective: 1100px;
+    transform: translate(-50%, -50%);
+    z-index: 10;
+}
+
+.logo-breath {
+    width: 100%;
+    height: 100%;
+    animation: logo-breathe 7.5s ease-in-out infinite;
+    transform-origin: center;
+}
+
+.logo-flipper {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    transform-style: preserve-3d;
+}
+
+.logo-face {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    border: 0;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+    transform-style: preserve-3d;
+    transform-origin: center;
+    transition: transform 0.82s cubic-bezier(0.2, 0.7, 0.2, 1), filter 0.82s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+
+.logo-front {
+    display: block;
+    padding: 0;
+    color: inherit;
+    background: transparent;
+    cursor: pointer;
+    text-decoration: none;
+    transform: rotateX(0deg);
+    appearance: none;
+}
+
+.logo-stage.is-flipped .logo-front {
+    transform: rotateX(180deg);
+}
+
+.logo-front img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    pointer-events: none;
+}
+
+.logo-back {
+    display: grid;
+    place-items: center;
+    padding: clamp(12px, 2.4vw, 26px) clamp(18px, 3vw, 40px);
+    transform: rotateX(-180deg);
+}
+
+.logo-stage.is-flipped .logo-back {
+    transform: rotateX(0deg);
+}
+
+.logo-back-shape {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+}
+
+.logo-links {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: clamp(7px, 1.5vw, 14px);
+    max-width: 82%;
+    font-family: Arial, Helvetica, sans-serif;
+    text-align: center;
+}
+
+.logo-links-title {
+    flex-basis: 100%;
+    color: rgba(255, 255, 255, 0.92);
+    font-size: clamp(10px, 1.4vw, 16px);
+    font-weight: 400;
+    line-height: 1;
+    letter-spacing: 0;
+}
+
+.logo-links a {
+    color: #ffffff;
+    font-size: clamp(13px, 2.1vw, 24px);
+    font-weight: 800;
+    line-height: 1;
+    letter-spacing: 0;
+    text-decoration: none;
+    text-transform: uppercase;
+    border-radius: 6px;
+    padding: clamp(5px, 0.8vw, 8px) clamp(6px, 1vw, 10px);
+    text-shadow: 0 1px 10px rgba(19, 19, 19, 0.32);
+    transition: background 0.2s ease, color 0.2s ease;
+}
+
+.logo-links a:hover,
+.logo-links a:focus-visible {
+    color: #131313;
+    background: rgba(255, 255, 255, 0.9);
+    outline: none;
+}
+
+.logo-links-dot {
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.82);
+}
+
+.logo-stage:hover .logo-face,
+.logo-stage:focus-within .logo-face {
+    filter: brightness(1.08);
+}
+
+.audio-toggle {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    z-index: 20;
+    display: grid;
+    place-items: center;
+    width: 36px;
+    height: 36px;
+    color: rgba(255, 255, 255, 0.58);
+    background: transparent;
+    border: 0;
+    border-radius: 8px;
+    cursor: pointer;
+    padding: 0;
+    transition: color 0.2s ease, opacity 0.2s ease;
+}
+
+.audio-toggle:hover,
+.audio-toggle:focus-visible {
+    color: rgba(255, 255, 255, 0.88);
+    outline: none;
+}
+
+.audio-toggle svg {
+    width: 18px;
+    height: 18px;
+    fill: none;
+    stroke: currentColor;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-width: 2;
+}
+
+.audio-toggle .muted-line {
+    opacity: 0;
+    transition: opacity 0.2s ease;
+}
+
+.audio-toggle.is-muted .sound-wave {
+    opacity: 0;
+}
+
+.audio-toggle.is-muted .muted-line {
+    opacity: 1;
+}
+
+@keyframes smoke-rise {
+    0% {
+        opacity: 0;
+        transform: translate3d(-50%, 0, 0) scale(0.52) rotate(var(--rotate));
+    }
+
+    14%,
+    68% {
+        opacity: var(--opacity);
+    }
+
+    100% {
+        opacity: 0;
+        transform: translate3d(calc(-50% + var(--drift)), -124vh, 0) scale(1.55) rotate(calc(var(--rotate) + 26deg));
+    }
+}
+
+@keyframes smoke-haze {
+    0%,
+    100% {
+        transform: translateX(-50%) translateY(0) scale(1);
+    }
+
+    50% {
+        transform: translateX(-50%) translateY(-10vh) scale(1.08);
+    }
+}
+
+@keyframes logo-breathe {
+    0%,
+    100% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.045);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .smoke-layer::before,
+    .smoke-layer::after,
+    .smoke,
+    .logo-breath {
+        animation: none;
+    }
+
+    .smoke {
+        opacity: var(--opacity);
+        transform: translate3d(calc(-50% + var(--drift)), -58vh, 0) scale(1.1) rotate(var(--rotate));
+    }
+}
+
+@media (max-width: 700px) {
+    .logo-stage {
+        width: 82vw;
+    }
+}

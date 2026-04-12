@@ -1,40 +1,70 @@
-import { readFile, writeFile } from "node:fs/promises";
+import { existsSync } from "node:fs";
+import { readFile } from "node:fs/promises";
 import { resolve } from "node:path";
 import { defineConfig } from "vite";
 
-const landingLogoMarkup = '<img id="logo-front-image" src="/appmogged.svg" alt="AppMogged">';
-const notFoundLogoMarkup = '<img id="logo-front-image" src="/404.svg" alt="404">';
+function serveNotFoundPage() {
+  async function handleNotFound(request, response, next, server) {
+    if (!request.url || request.method !== "GET") {
+      next();
+      return;
+    }
 
-function buildNotFoundHtml(indexHtml) {
-  const notFoundHtml = indexHtml.replace(landingLogoMarkup, notFoundLogoMarkup);
-  if (notFoundHtml === indexHtml) {
-    throw new Error("Unable to generate 404.html because the landing logo markup was not found.");
+    const url = new URL(request.url, "http://localhost");
+    const pathname = decodeURIComponent(url.pathname);
+    const acceptHeader = request.headers.accept;
+    const isHtmlNavigation =
+      acceptHeader === undefined || acceptHeader.includes("text/html") || acceptHeader.includes("*/*");
+    const isFileRequest = pathname.split("/").pop()?.includes(".");
+    const sourcePath = resolve(server.config.root, `.${pathname}`);
+
+    if (
+      !isHtmlNavigation ||
+      isFileRequest ||
+      pathname === "/" ||
+      pathname === "/index.html" ||
+      pathname === "/404.html" ||
+      pathname.startsWith("/@") ||
+      existsSync(sourcePath)
+    ) {
+      next();
+      return;
+    }
+
+    const notFoundHtml = await readFile(resolve(server.config.root, "404.html"), "utf8");
+    const transformedHtml = await server.transformIndexHtml(request.url, notFoundHtml);
+    response.statusCode = 404;
+    response.setHeader("Content-Type", "text/html");
+    response.end(transformedHtml);
   }
 
-  return notFoundHtml;
-}
-
-function emitNotFoundPage() {
-  let outputDirectory = "";
-
   return {
-    configResolved(config) {
-      outputDirectory = resolve(config.root, config.build.outDir);
+    name: "serve-not-found-page",
+    configureServer(server) {
+      server.middlewares.use((request, response, next) => {
+        void handleNotFound(request, response, next, server).catch(next);
+      });
     },
-    name: "emit-not-found-page",
-    async writeBundle() {
-      const indexHtml = await readFile(resolve(outputDirectory, "index.html"), "utf8");
-      await writeFile(resolve(outputDirectory, "404.html"), buildNotFoundHtml(indexHtml), "utf8");
+    configurePreviewServer(server) {
+      server.middlewares.use((request, response, next) => {
+        void handleNotFound(request, response, next, server).catch(next);
+      });
     },
   };
 }
 
 export default defineConfig({
-  plugins: [emitNotFoundPage()],
+  plugins: [serveNotFoundPage()],
   root: "src",
   base: "/",
   build: {
     emptyOutDir: true,
     outDir: "../dist",
+    rollupOptions: {
+      input: {
+        index: resolve("src/index.html"),
+        404: resolve("src/404.html"),
+      },
+    },
   },
 });
