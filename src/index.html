@@ -464,6 +464,14 @@
             const logoFront = document.querySelector('.logo-front');
             const logoBack = document.querySelector('.logo-back');
             if (logoStage && logoFront && logoBack) {
+                const logoFrontImage = document.getElementById('logo-front-image');
+                const normalizedPath = window.location.pathname.replace(/\/+$/, '') || '/';
+                if (logoFrontImage && normalizedPath !== '/' && normalizedPath !== '/index.html') {
+                    logoFrontImage.src = '/404.svg';
+                    logoFrontImage.alt = '404';
+                    document.title = '404. Get mogged.';
+                }
+
                 const logoLinks = Array.from(logoBack.querySelectorAll('a'));
                 const setLogoFlipped = function(isFlipped) {
                     logoStage.classList.toggle('is-flipped', isFlipped);
@@ -526,7 +534,7 @@
             <div class="logo-breath">
                 <div class="logo-flipper">
                     <button class="logo-face logo-front" type="button" aria-label="Show AppMogged links" aria-expanded="false" aria-controls="logo-links">
-                        <img src="/appmogged.svg" alt="AppMogged">
+                        <img id="logo-front-image" src="/appmogged.svg" alt="AppMogged">
                     </button>
                     <div class="logo-face logo-back" aria-hidden="true">
                         <svg class="logo-back-shape" viewBox="0 0 410 141" aria-hidden="true" preserveAspectRatio="none">
