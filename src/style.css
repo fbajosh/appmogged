@@ -170,6 +170,26 @@ body.scrolled .triangle-bottom-left {
     transform-style: preserve-3d;
 }
 
+.logo-flipper::before,
+.logo-flipper::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 3;
+    opacity: 0;
+    pointer-events: none;
+    background: var(--logo-desync-image, none) center / contain no-repeat;
+    mix-blend-mode: screen;
+}
+
+.logo-flipper::before {
+    filter: sepia(1) saturate(8) hue-rotate(285deg);
+}
+
+.logo-flipper::after {
+    filter: sepia(1) saturate(8) hue-rotate(145deg);
+}
+
 .logo-face {
     position: absolute;
     inset: 0;
@@ -368,22 +388,104 @@ body.scrolled .triangle-bottom-left {
 
 @keyframes logo-static-blur {
     0%,
-    96.8%,
-    98.8%,
+    95.5%,
+    99.9%,
     100% {
         filter: none;
     }
 
-    97.2% {
+    96% {
         filter: blur(1.2px) contrast(1.28) saturate(1.22);
     }
 
-    97.7% {
+    97.2% {
         filter: blur(0.6px) contrast(1.48) saturate(0.86);
     }
 
-    98.2% {
+    98.4% {
         filter: blur(1px) contrast(1.18) saturate(1.35);
+    }
+
+    99.2% {
+        filter: blur(0.7px) contrast(1.38) saturate(1.12);
+    }
+}
+
+.logo-breath .logo-flipper::before {
+    animation: logo-desync-a 15.36s linear infinite;
+}
+
+.logo-breath .logo-flipper::after {
+    animation: logo-desync-b 15.36s linear infinite;
+}
+
+@keyframes logo-desync-a {
+    0%,
+    95.5%,
+    99.9%,
+    100% {
+        opacity: 0;
+        transform: translate3d(0, 0, 0);
+        clip-path: inset(0 0 0 0);
+    }
+
+    96% {
+        opacity: 0.48;
+        transform: translate3d(-5px, 0, 0);
+        clip-path: inset(0 0 55% 0);
+    }
+
+    97.2% {
+        opacity: 0.32;
+        transform: translate3d(4px, 0, 0);
+        clip-path: inset(38% 0 24% 0);
+    }
+
+    98.4% {
+        opacity: 0.42;
+        transform: translate3d(-3px, 0, 0);
+        clip-path: inset(68% 0 0 0);
+    }
+
+    99.2% {
+        opacity: 0.3;
+        transform: translate3d(5px, 0, 0);
+        clip-path: inset(26% 0 44% 0);
+    }
+}
+
+@keyframes logo-desync-b {
+    0%,
+    95.5%,
+    99.9%,
+    100% {
+        opacity: 0;
+        transform: translate3d(0, 0, 0);
+        clip-path: inset(0 0 0 0);
+    }
+
+    96% {
+        opacity: 0.34;
+        transform: translate3d(4px, 0, 0);
+        clip-path: inset(58% 0 0 0);
+    }
+
+    97.2% {
+        opacity: 0.46;
+        transform: translate3d(-6px, 0, 0);
+        clip-path: inset(16% 0 52% 0);
+    }
+
+    98.4% {
+        opacity: 0.28;
+        transform: translate3d(3px, 0, 0);
+        clip-path: inset(0 0 72% 0);
+    }
+
+    99.2% {
+        opacity: 0.38;
+        transform: translate3d(-4px, 0, 0);
+        clip-path: inset(45% 0 18% 0);
     }
 }
 
@@ -405,4 +507,5 @@ body.scrolled .triangle-bottom-left {
     .logo-stage {
         width: 82vw;
     }
+
 }
