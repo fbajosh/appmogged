@@ -273,11 +273,19 @@ body.scrolled .triangle-bottom-left {
     width: 100%;
 }
 
-.logo-links-row a:first-child {
+.logo-links-row:has(> :nth-child(5)) {
+    grid-template-columns: minmax(0, 1fr) auto auto auto minmax(0, 1fr);
+}
+
+.logo-links-row > * {
+    justify-self: center;
+}
+
+.logo-links-row > a:first-of-type {
     justify-self: end;
 }
 
-.logo-links-row a:last-child {
+.logo-links-row > a:last-of-type {
     justify-self: start;
 }
 
@@ -368,6 +376,35 @@ body.scrolled .triangle-bottom-left {
 
 .audio-toggle.is-muted .muted-line {
     opacity: 1;
+}
+
+.fuego-link {
+    position: absolute;
+    right: 20px;
+    bottom: 20px;
+    z-index: 20;
+    display: grid;
+    place-items: center;
+    width: 36px;
+    height: 36px;
+    color: rgba(255, 255, 255, 0.88);
+    opacity: 0.5;
+    text-decoration: none;
+    border-radius: 8px;
+    transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+.fuego-link:hover,
+.fuego-link:focus-visible {
+    opacity: 0.72;
+    transform: scale(1.08);
+    outline: none;
+}
+
+.fuego-link svg {
+    width: 18px;
+    height: 18px;
+    fill: currentColor;
 }
 
 @keyframes smoke-rise {
