@@ -152,6 +152,7 @@ body.scrolled .triangle-bottom-left {
     width: min(50vw, 620px);
     aspect-ratio: 410 / 141;
     perspective: 1100px;
+    container-type: inline-size;
     transform: translate(-50%, -50%);
     z-index: 10;
 }
@@ -229,14 +230,23 @@ body.scrolled .triangle-bottom-left {
 }
 
 .logo-back {
-    display: grid;
-    place-items: center;
-    padding: clamp(12px, 2.4vw, 26px) clamp(18px, 3vw, 40px);
-    transform: rotateX(-180deg);
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    justify-content: flex-start;
+    inset: auto 0;
+    top: 50%;
+    height: 100%;
+    padding: clamp(24px, 6cqw, 38px) clamp(20px, 5cqw, 32px);
+    transform: translateY(-50%) rotateX(-180deg);
+    transition: transform 0.82s cubic-bezier(0.2, 0.7, 0.2, 1),
+        height 0.7s cubic-bezier(0.2, 0.7, 0.2, 1), filter 0.82s ease;
 }
 
 .logo-stage.is-flipped .logo-back {
-    transform: rotateX(0deg);
+    height: min(max(100%, var(--expanded-height, 440px)), calc(100dvh - 80px));
+    transform: translateY(-50%) rotateX(0deg);
+    transition-delay: 0s, 0.82s, 0s;
 }
 
 .logo-back-shape {
@@ -250,75 +260,56 @@ body.scrolled .triangle-bottom-left {
 .logo-links {
     position: relative;
     z-index: 1;
-    display: flex;
-    flex-direction: column;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
     align-items: center;
-    gap: clamp(4px, 0.95vw, 10px);
-    max-width: 82%;
+    gap: 4px clamp(12px, 3cqw, 20px);
+    align-content: start;
+    grid-auto-rows: max-content;
+    flex: 0 1 auto;
+    min-height: 0;
+    width: 100%;
+    max-height: 100%;
+    overflow-y: hidden;
+    overscroll-behavior: contain;
     font-family: Arial, Helvetica, sans-serif;
-    text-align: center;
+    text-align: left;
+}
+
+.logo-stage.is-expanded .logo-links {
+    overflow-y: auto;
 }
 
 .logo-links-title {
-    color: rgba(255, 255, 255, 0.92);
-    font-size: clamp(10px, 1.4vw, 16px);
-    font-weight: 400;
-    line-height: 1;
-    letter-spacing: 0;
-}
-
-.logo-links-row {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
-    align-items: center;
-    column-gap: clamp(7px, 1.4vw, 14px);
-    width: 100%;
-}
-
-.logo-links-row:has(> :nth-child(5)) {
-    grid-template-columns: minmax(0, 1fr) auto auto auto minmax(0, 1fr);
-}
-
-.logo-links-row > * {
-    justify-self: center;
-}
-
-.logo-links-row > a:first-of-type {
-    justify-self: end;
-}
-
-.logo-links-row > a:last-of-type {
-    justify-self: start;
+    grid-column: 1 / -1;
+    margin-bottom: 6px;
+    padding: 5px 4px;
+    color: #ffffff;
+    font-size: clamp(14px, 3.5cqw, 22px);
+    font-weight: 800;
+    line-height: 1.25;
+    text-align: center;
+    text-transform: uppercase;
+    text-shadow: 0 1px 10px rgba(19, 19, 19, 0.32);
 }
 
 .logo-links a {
     color: #ffffff;
-    font-size: clamp(11px, 1.85vw, 22px);
+    font-size: clamp(14px, 3.5cqw, 22px);
     font-weight: 800;
-    line-height: 1;
-    letter-spacing: 0;
+    line-height: 1.25;
     text-decoration: none;
     text-transform: uppercase;
-    white-space: nowrap;
+    overflow-wrap: anywhere;
     border-radius: 6px;
-    padding: clamp(5px, 0.8vw, 8px) clamp(6px, 1vw, 10px);
+    padding: 5px 4px;
     text-shadow: 0 1px 10px rgba(19, 19, 19, 0.32);
     transition: background 0.2s ease, color 0.2s ease;
 }
 
-.logo-link-secondary {
-    font-size: clamp(10px, 1.55vw, 18px);
-}
-
-.logo-link-full {
-    font-size: clamp(8px, 1.35vw, 15px);
-}
-
-.logo-links-dot {
-    width: 5px;
-    height: 5px;
-    border-radius: 50%;
-    background: rgba(255, 255, 255, 0.82);
+.logo-stage.is-flipped .logo-flipper::before,
+.logo-stage.is-flipped .logo-flipper::after {
+    animation: none;
 }
 
 .logo-links a:hover,
@@ -552,6 +543,18 @@ body.scrolled .triangle-bottom-left {
 }
 
 @media (prefers-reduced-motion: reduce) {
+    .logo-face,
+    .logo-stage.is-flipped .logo-back,
+    .logo-links,
+    .logo-stage.is-flipped .logo-links {
+        transition: none;
+    }
+
+    .logo-breath .logo-flipper::before,
+    .logo-breath .logo-flipper::after {
+        animation: none;
+    }
+
     .smoke-layer::before,
     .smoke-layer::after,
     .smoke,
