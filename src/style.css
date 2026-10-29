@@ -294,6 +294,8 @@ body.scrolled .triangle-bottom-left {
 }
 
 .logo-links a {
+    justify-self: start;
+    max-width: 100%;
     color: #ffffff;
     font-size: clamp(14px, 3.5cqw, 22px);
     font-weight: 800;
